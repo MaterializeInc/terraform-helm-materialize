@@ -1,11 +1,16 @@
+# examples/gcp/main.tf
+
 locals {
+  encoded_endpoint = urlencode("https://storage.googleapis.com")
+  encoded_secret   = urlencode(module.storage.hmac_secret)
+
   instances = [
     for instance in var.instance_configs : {
       name      = instance.name
       namespace = instance.namespace
 
       metadata_backend_url = format(
-        "postgres://%s:%s@%s/%s?sslmode=require",
+        "postgres://%s:%s@%s:5432/%s?sslmode=disable",
         instance.database_username,
         instance.database_password,
         instance.database_host,
@@ -13,11 +18,12 @@ locals {
       )
 
       persist_backend_url = format(
-        "s3://%s/%s:serviceaccount:%s:%s",
+        "s3://%s:%s@%s/materialize?endpoint=%s&region=%s",
+        module.storage.hmac_access_id,
+        local.encoded_secret,
         module.storage.bucket_name,
-        var.environment,
-        coalesce(instance.namespace, "materialize"),
-        instance.name
+        local.encoded_endpoint,
+        var.region
       )
 
       cpu_request    = instance.cpu_request
@@ -36,16 +42,14 @@ module "materialize_operator" {
   helm_values = {
     operator = {
       cloudProvider = {
-        type   = "aws"
-        region = data.aws_region.current.name
+        type   = "gcp"
+        region = data.google_client_config.current.region
         providers = {
-          aws = {
+          gcp = {
             enabled   = true
-            accountID = data.aws_caller_identity.current.account_id
-            iam = {
-              roles = {
-                environment = var.iam_role_arn
-              }
+            projectID = data.google_project.current.project_id
+            workloadIdentity = {
+              serviceAccount = var.gcp_service_account_email
             }
           }
         }
@@ -56,5 +60,5 @@ module "materialize_operator" {
   instances = local.instances
 }
 
-data "aws_region" "current" {}
-data "aws_caller_identity" "current" {}
+data "google_client_config" "current" {}
+data "google_project" "current" {}
