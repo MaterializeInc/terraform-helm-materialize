@@ -48,9 +48,9 @@ variable "instances" {
     namespace            = optional(string)
     metadata_backend_url = string
     persist_backend_url  = string
-    cpu_request         = optional(string, "1")
-    memory_request      = optional(string, "1Gi")
-    memory_limit        = optional(string, "1Gi")
+    cpu_request          = optional(string, "1")
+    memory_request       = optional(string, "1Gi")
+    memory_limit         = optional(string, "1Gi")
   }))
   default = []
 }
