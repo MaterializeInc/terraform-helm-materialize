@@ -96,7 +96,7 @@ resource "kubernetes_job" "db_init_job" {
   for_each = { for idx, instance in var.instances : instance.database_name => instance }
 
   metadata {
-    name      = "create-db-${each.key}"
+    name      = replace("create-db-${each.key}", "_", "-")
     namespace = coalesce(each.value.namespace, var.operator_namespace)
   }
 
