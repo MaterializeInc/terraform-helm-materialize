@@ -92,22 +92,6 @@ resource "kubernetes_manifest" "materialize_instances" {
 }
 
 # Materialize does not currently create databases within the instances, so we need to create them ourselves
-resource "kubernetes_config_map" "db_init_configmap" {
-  for_each = { for idx, instance in var.instances : instance.name => instance }
-
-  metadata {
-    name      = "init-db-script-${each.key}"
-    namespace = coalesce(each.value.namespace, var.operator_namespace)
-  }
-
-  data = {
-    "init.sql" = format(
-      "CREATE DATABASE IF NOT EXISTS %s;",
-      coalesce(each.value.database_name, "${each.key}_db")
-    )
-  }
-}
-
 resource "kubernetes_job" "db_init_job" {
   for_each = { for idx, instance in var.instances : instance.name => instance }
 
@@ -132,21 +116,12 @@ resource "kubernetes_job" "db_init_job" {
           command = [
             "/bin/sh",
             "-c",
-            format(
-              "psql $DATABASE_URL -c \"CREATE DATABASE %s;\"",
-              coalesce(each.value.database_name, "${each.key}_db")
-            )
+            "psql $DATABASE_URL -c \"CREATE DATABASE ${each.key}_db;\""
           ]
 
           env {
-            name = "DATABASE_URL"
-            value = format(
-              "postgres://%s:%s@%s/%s?sslmode=require",
-              each.value.database_username,
-              each.value.database_password,
-              each.value.database_host,
-              "postgres" // Default database
-            )
+            name  = "DATABASE_URL"
+            value = each.value.metadata_backend_url
           }
         }
 

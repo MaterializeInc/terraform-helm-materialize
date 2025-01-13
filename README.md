@@ -31,7 +31,6 @@ No modules.
 | Name | Type |
 |------|------|
 | [helm_release.materialize_operator](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
-| [kubernetes_config_map.db_init_configmap](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/config_map) | resource |
 | [kubernetes_job.db_init_job](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/job) | resource |
 | [kubernetes_manifest.materialize_instances](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/manifest) | resource |
 | [kubernetes_namespace.instance_namespaces](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace) | resource |
