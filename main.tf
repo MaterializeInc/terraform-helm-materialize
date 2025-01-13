@@ -61,7 +61,7 @@ resource "kubernetes_manifest" "materialize_instances" {
       namespace = coalesce(each.value.namespace, var.operator_namespace)
     }
     spec = {
-      environmentdImageRef = "materialize/environmentd:${var.operator_version}"
+      environmentdImageRef = "materialize/environmentd:${each.value.environmentd_version}"
       backendSecretName    = "${each.key}-materialize-backend"
       environmentdResourceRequirements = {
         limits = {
