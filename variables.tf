@@ -36,6 +36,7 @@ variable "instances" {
   type = list(object({
     name                 = string
     namespace            = optional(string)
+    database_name        = string
     metadata_backend_url = string
     persist_backend_url  = string
     cpu_request          = optional(string, "1")
