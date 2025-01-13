@@ -25,11 +25,6 @@ variable "helm_values" {
   type        = any
 }
 
-variable "cluster_endpoint" {
-  description = "EKS cluster endpoint"
-  type        = string
-}
-
 variable "operator_namespace" {
   description = "Namespace for the Materialize operator"
   type        = string

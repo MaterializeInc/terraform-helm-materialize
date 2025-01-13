@@ -22,8 +22,3 @@ output "materialize_instances" {
     }
   }
 }
-
-output "cluster_endpoint" {
-  description = "Outcluster endpoint for Materialize instances"
-  value       = var.cluster_endpoint
-}
