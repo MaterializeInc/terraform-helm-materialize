@@ -11,7 +11,7 @@ variable "environment" {
 variable "operator_version" {
   description = "Version of the Materialize operator to install"
   type        = string
-  default     = "v0.127.1"
+  default     = "v25.1.0-beta.1"
 }
 
 variable "helm_repository" {

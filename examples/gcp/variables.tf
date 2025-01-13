@@ -19,15 +19,14 @@ variable "region" {
 variable "instance_configs" {
   description = "Configuration for Materialize instances"
   type = list(object({
-    name              = string
-    namespace         = optional(string)
-    database_name     = optional(string)
-    database_username = string
-    database_password = string
-    database_host     = string
-    cpu_request       = optional(string, "1")
-    memory_request    = optional(string, "1Gi")
-    memory_limit      = optional(string, "1Gi")
+    name                 = string
+    namespace            = optional(string)
+    database_name        = string
+    metadata_backend_url = string
+    persist_backend_url  = string
+    cpu_request          = optional(string, "1")
+    memory_request       = optional(string, "1Gi")
+    memory_limit         = optional(string, "1Gi")
   }))
 }
 

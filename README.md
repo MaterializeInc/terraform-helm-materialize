@@ -47,7 +47,7 @@ No modules.
 | <a name="input_instances"></a> [instances](#input\_instances) | Configuration for Materialize instances | <pre>list(object({<br/>    name                 = string<br/>    namespace            = optional(string)<br/>    metadata_backend_url = string<br/>    persist_backend_url  = string<br/>    cpu_request          = optional(string, "1")<br/>    memory_request       = optional(string, "1Gi")<br/>    memory_limit         = optional(string, "1Gi")<br/>  }))</pre> | `[]` | no |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | Namespace prefix for all resources | `string` | n/a | yes |
 | <a name="input_operator_namespace"></a> [operator\_namespace](#input\_operator\_namespace) | Namespace for the Materialize operator | `string` | `"materialize"` | no |
-| <a name="input_operator_version"></a> [operator\_version](#input\_operator\_version) | Version of the Materialize operator to install | `string` | `"v0.127.1"` | no |
+| <a name="input_operator_version"></a> [operator\_version](#input\_operator\_version) | Version of the Materialize operator to install | `string` | `"v25.1.0-beta.1"` | no |
 | <a name="input_postgres_version"></a> [postgres\_version](#input\_postgres\_version) | Postgres version to use for the metadata backend | `string` | `"15"` | no |
 
 ## Outputs
