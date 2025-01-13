@@ -30,11 +30,6 @@ variable "cluster_endpoint" {
   type        = string
 }
 
-variable "cluster_ca_certificate" {
-  description = "EKS cluster CA certificate"
-  type        = string
-}
-
 variable "operator_namespace" {
   description = "Namespace for the Materialize operator"
   type        = string

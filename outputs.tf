@@ -27,8 +27,3 @@ output "cluster_endpoint" {
   description = "Outcluster endpoint for Materialize instances"
   value       = var.cluster_endpoint
 }
-
-output "cluster_ca_certificate" {
-  description = "CA certificate for the EKS cluster"
-  value       = var.cluster_ca_certificate
-}
