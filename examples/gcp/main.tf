@@ -1,20 +1,19 @@
-# examples/gcp/main.tf
-
 locals {
   encoded_endpoint = urlencode("https://storage.googleapis.com")
   encoded_secret   = urlencode(module.storage.hmac_secret)
 
   instances = [
     for instance in var.instance_configs : {
-      name      = instance.name
-      namespace = instance.namespace
+      name          = instance.name
+      namespace     = instance.namespace
+      database_name = instance.database_name
 
       metadata_backend_url = format(
         "postgres://%s:%s@%s:5432/%s?sslmode=disable",
-        instance.database_username,
-        instance.database_password,
-        instance.database_host,
-        coalesce(instance.database_name, "${instance.name}_db")
+        var.database_config.username,
+        var.database_config.password,
+        module.database.private_ip,
+        coalesce(instance.database_name, instance.name)
       )
 
       persist_backend_url = format(
@@ -33,11 +32,19 @@ locals {
   ]
 }
 
-module "materialize_operator" {
+module "operator" {
   source = "github.com/MaterializeInc/terraform-helm-materialize?ref=v0.1.0"
 
-  namespace   = var.namespace
-  environment = var.environment
+  depends_on = [
+    module.gke,
+    module.database,
+    module.storage
+  ]
+
+  namespace          = var.namespace
+  environment        = var.environment
+  operator_version   = var.operator_version
+  operator_namespace = var.operator_namespace
 
   helm_values = {
     operator = {
@@ -46,11 +53,7 @@ module "materialize_operator" {
         region = data.google_client_config.current.region
         providers = {
           gcp = {
-            enabled   = true
-            projectID = data.google_project.current.project_id
-            workloadIdentity = {
-              serviceAccount = var.gcp_service_account_email
-            }
+            enabled = true
           }
         }
       }
@@ -58,7 +61,11 @@ module "materialize_operator" {
   }
 
   instances = local.instances
+
+  providers = {
+    kubernetes = kubernetes
+    helm       = helm
+  }
 }
 
 data "google_client_config" "current" {}
-data "google_project" "current" {}

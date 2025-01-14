@@ -122,7 +122,7 @@ resource "kubernetes_job" "db_init_job" {
           env {
             name = "DATABASE_URL"
             # Use the default postgres database for connecting to the postgres instance
-            value = "${replace(each.value.metadata_backend_url, "/${basename(each.value.metadata_backend_url)}", "/postgres")}"
+            value = replace(each.value.metadata_backend_url, "/${basename(each.value.metadata_backend_url)}", "/postgres")
           }
         }
 

@@ -29,8 +29,3 @@ variable "instance_configs" {
     memory_limit         = optional(string, "1Gi")
   }))
 }
-
-variable "gcp_service_account_email" {
-  description = "Email of the GCP service account for workload identity"
-  type        = string
-}

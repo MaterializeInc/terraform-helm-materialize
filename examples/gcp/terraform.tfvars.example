@@ -1,4 +1,3 @@
-
 instance_configs_example = [
   {
     name              = "mz-instance-1"
@@ -22,7 +21,6 @@ instance_configs_example = [
   }
 ]
 
-gcp_service_account_email = "materialize@project-id.iam.gserviceaccount.com"
 namespace                 = "myapp"
 environment              = "prod"
 region                   = "us-central1"
