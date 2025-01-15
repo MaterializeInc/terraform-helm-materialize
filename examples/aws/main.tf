@@ -1,39 +1,5 @@
 locals {
-  instances = [
-    for instance in var.instance_configs : {
-      name      = instance.name
-      namespace = instance.namespace
-
-      metadata_backend_url = format(
-        "postgres://%s:%s@%s/%s?sslmode=require",
-        instance.database_username,
-        instance.database_password,
-        instance.database_host,
-        coalesce(instance.database_name, "${instance.name}_db")
-      )
-
-      persist_backend_url = format(
-        "s3://%s/%s:serviceaccount:%s:%s",
-        module.storage.bucket_name,
-        var.environment,
-        coalesce(instance.namespace, "materialize"),
-        instance.name
-      )
-
-      cpu_request    = instance.cpu_request
-      memory_request = instance.memory_request
-      memory_limit   = instance.memory_limit
-    }
-  ]
-}
-
-module "materialize_operator" {
-  source = "github.com/MaterializeInc/terraform-helm-materialize?ref=v0.1.0"
-
-  namespace   = var.namespace
-  environment = var.environment
-
-  helm_values = {
+  default_helm_values = {
     operator = {
       cloudProvider = {
         type   = "aws"
@@ -53,7 +19,59 @@ module "materialize_operator" {
     }
   }
 
-  instances = local.instances
+  merged_helm_values = merge(local.default_helm_values, var.helm_values)
+
+  instances = [
+    for instance in var.instance_configs : {
+      name          = instance.name
+      namespace     = instance.namespace
+      database_name = instance.database_name
+
+      metadata_backend_url = format(
+        "postgres://%s:%s@%s/%s?sslmode=require",
+        var.database_config.username, # db_instance_username
+        var.database_config.password, # db_instance_username
+        var.database_config.host,     # db_instance_endpoint
+        coalesce(instance.database_name, instance.name)
+      )
+
+      persist_backend_url = format(
+        "s3://%s/%s-%s:serviceaccount:%s:%s",
+        module.storage.bucket_name,
+        var.environment,
+        instance.name,
+        coalesce(instance.namespace, var.operator_namespace),
+        instance.name
+      )
+
+      cpu_request    = instance.cpu_request
+      memory_request = instance.memory_request
+      memory_limit   = instance.memory_limit
+    }
+  ]
+}
+
+module "operator" {
+  source = "github.com/MaterializeInc/terraform-helm-materialize?ref=v0.1.0"
+
+  depends_on = [
+    module.eks,
+    module.database,
+    module.storage
+  ]
+
+  namespace          = var.namespace
+  environment        = var.environment
+  operator_version   = var.operator_version
+  operator_namespace = var.operator_namespace
+
+  helm_values = local.merged_helm_values
+  instances   = local.instances
+
+  providers = {
+    kubernetes = kubernetes
+    helm       = helm
+  }
 }
 
 data "aws_region" "current" {}

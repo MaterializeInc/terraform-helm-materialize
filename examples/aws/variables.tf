@@ -28,3 +28,15 @@ variable "iam_role_arn" {
   description = "IAM role ARN for Materialize S3 access"
   type        = string
 }
+
+variable "helm_values" {
+  description = "Additional Helm values to merge with defaults"
+  type        = any
+  default     = {}
+}
+
+variable "operator_namespace" {
+  description = "Namespace for the Materialize operator"
+  type        = string
+  default     = "materialize"
+}
