@@ -17,7 +17,7 @@ variable "operator_version" {
 variable "helm_repository" {
   description = "Repository URL for the Materialize operator Helm chart"
   type        = string
-  default     = "https://raw.githubusercontent.com/bobbyiliev/materialize/refs/heads/helm-chart-package/misc/helm-charts"
+  default     = "https://materializeinc.github.io/materialize/"
 }
 
 variable "helm_values" {
