@@ -47,6 +47,9 @@ module "operator" {
   operator_namespace = var.operator_namespace
 
   helm_values = {
+    image = {
+      tag = var.orchestratord_version
+    }
     operator = {
       cloudProvider = {
         type   = "gcp"

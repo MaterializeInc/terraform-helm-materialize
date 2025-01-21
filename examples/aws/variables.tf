@@ -35,6 +35,12 @@ variable "helm_values" {
   default     = {}
 }
 
+variable "orchestratord_version" {
+  description = "Version of the Materialize orchestrator to install"
+  type        = string
+  default     = "v0.130.0"
+}
+
 variable "operator_namespace" {
   description = "Namespace for the Materialize operator"
   type        = string
