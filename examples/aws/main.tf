@@ -55,7 +55,7 @@ locals {
 }
 
 module "operator" {
-  source = "github.com/MaterializeInc/terraform-helm-materialize?ref=v0.1.0"
+  source = "github.com/MaterializeInc/terraform-helm-materialize?ref=v0.1.1"
 
   depends_on = [
     module.eks,
