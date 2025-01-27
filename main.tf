@@ -8,6 +8,12 @@ resource "kubernetes_namespace" "materialize" {
   }
 }
 
+resource "kubernetes_namespace" "monitoring" {
+  metadata {
+    name = var.monitoring_namespace
+  }
+}
+
 resource "kubernetes_namespace" "instance_namespaces" {
   for_each = toset(compact([for instance in var.instances : instance.namespace if instance.namespace != null]))
 
@@ -130,4 +136,29 @@ resource "kubernetes_job" "db_init_job" {
       }
     }
   }
+}
+
+# Install the metrics-server for monitoring
+# Required for the Materialize Console to display cluster metrics
+resource "helm_release" "metrics_server" {
+  count = var.install_metrics_server ? 1 : 0
+
+  name       = "${local.name_prefix}-metrics-server"
+  namespace  = kubernetes_namespace.monitoring.metadata[0].name
+  repository = "https://kubernetes-sigs.github.io/metrics-server/"
+  chart      = "metrics-server"
+  version    = var.metrics_server_version
+
+  # Common configuration values
+  set {
+    name  = "args[0]"
+    value = "--kubelet-insecure-tls"
+  }
+
+  set {
+    name  = "metrics.enabled"
+    value = "true"
+  }
+
+  depends_on = [kubernetes_namespace.monitoring]
 }

@@ -31,6 +31,24 @@ variable "operator_namespace" {
   default     = "materialize"
 }
 
+variable "monitoring_namespace" {
+  description = "Namespace for monitoring resources"
+  type        = string
+  default     = "monitoring"
+}
+
+variable "metrics_server_version" {
+  description = "Version of metrics-server to install"
+  type        = string
+  default     = "3.12.2"
+}
+
+variable "install_metrics_server" {
+  description = "Whether to install the metrics-server"
+  type        = bool
+  default     = true
+}
+
 variable "instances" {
   description = "Configuration for Materialize instances"
   type = list(object({
