@@ -1,5 +1,10 @@
 locals {
   default_helm_values = {
+    observability = {
+      podMetrics = {
+        enabled = true
+      }
+    }
     operator = {
       image = {
         tag = var.orchestratord_version

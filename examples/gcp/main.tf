@@ -50,6 +50,11 @@ module "operator" {
     image = {
       tag = var.orchestratord_version
     }
+    observability = {
+      podMetrics = {
+        enabled = true
+      }
+    }
     operator = {
       cloudProvider = {
         type   = "gcp"
