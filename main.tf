@@ -93,13 +93,14 @@ resource "kubernetes_manifest" "materialize_instances" {
   depends_on = [
     helm_release.materialize_operator,
     kubernetes_secret.materialize_backends,
-    kubernetes_namespace.instance_namespaces
+    kubernetes_namespace.instance_namespaces,
+    kubernetes_job.db_init_job
   ]
 }
 
 # Materialize does not currently create databases within the instances, so we need to create them ourselves
 resource "kubernetes_job" "db_init_job" {
-  for_each = { for idx, instance in var.instances : instance.database_name => instance }
+  for_each = { for idx, instance in var.instances : instance.database_name => instance if lookup(instance, "create_database", true) }
 
   metadata {
     name      = replace("create-db-${each.key}", "_", "-")
@@ -126,8 +127,7 @@ resource "kubernetes_job" "db_init_job" {
           ]
 
           env {
-            name = "DATABASE_URL"
-            # Use the default postgres database for connecting to the postgres instance
+            name  = "DATABASE_URL"
             value = replace(each.value.metadata_backend_url, "/${basename(each.value.metadata_backend_url)}", "/postgres")
           }
         }
@@ -136,6 +136,8 @@ resource "kubernetes_job" "db_init_job" {
       }
     }
   }
+
+  wait_for_completion = true
 }
 
 # Install the metrics-server for monitoring
