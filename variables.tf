@@ -54,6 +54,7 @@ variable "instances" {
   type = list(object({
     name                 = string
     namespace            = optional(string)
+    create_database      = optional(bool, true)
     database_name        = string
     metadata_backend_url = string
     persist_backend_url  = string
