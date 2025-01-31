@@ -93,7 +93,8 @@ resource "kubernetes_manifest" "materialize_instances" {
   depends_on = [
     helm_release.materialize_operator,
     kubernetes_secret.materialize_backends,
-    kubernetes_namespace.instance_namespaces
+    kubernetes_namespace.instance_namespaces,
+    kubernetes_job.db_init_job
   ]
 }
 
@@ -122,7 +123,7 @@ resource "kubernetes_job" "db_init_job" {
           command = [
             "/bin/sh",
             "-c",
-            "psql $DATABASE_URL -tc \"SELECT 1 FROM pg_database WHERE datname = '${each.key}'\" | grep -q 1 || psql $DATABASE_URL -c \"CREATE DATABASE ${each.key};\""
+            "psql $DATABASE_URL -c \"CREATE DATABASE ${each.key};\""
           ]
 
           env {
@@ -135,6 +136,8 @@ resource "kubernetes_job" "db_init_job" {
       }
     }
   }
+
+  wait_for_completion = true
 }
 
 # Install the metrics-server for monitoring
