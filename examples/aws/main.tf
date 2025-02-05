@@ -37,9 +37,9 @@ locals {
 
       metadata_backend_url = format(
         "postgres://%s:%s@%s/%s?sslmode=require",
-        var.database_config.username, # db_instance_username
-        var.database_config.password, # db_instance_username
-        var.database_config.host,     # db_instance_endpoint
+        var.database_config.username,
+        var.database_config.password,
+        var.database_config.host,
         coalesce(instance.database_name, instance.name)
       )
 
@@ -52,9 +52,12 @@ locals {
         instance.name
       )
 
-      cpu_request    = instance.cpu_request
-      memory_request = instance.memory_request
-      memory_limit   = instance.memory_limit
+      cpu_request      = instance.cpu_request
+      memory_request   = instance.memory_request
+      memory_limit     = instance.memory_limit
+      in_place_rollout = instance.in_place_rollout
+      request_rollout  = instance.request_rollout
+      force_rollout    = instance.force_rollout
     }
   ]
 }
