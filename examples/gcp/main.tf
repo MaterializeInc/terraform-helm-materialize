@@ -25,9 +25,12 @@ locals {
         var.region
       )
 
-      cpu_request    = instance.cpu_request
-      memory_request = instance.memory_request
-      memory_limit   = instance.memory_limit
+      cpu_request      = instance.cpu_request
+      memory_request   = instance.memory_request
+      memory_limit     = instance.memory_limit
+      in_place_rollout = instance.in_place_rollout
+      request_rollout  = instance.request_rollout
+      force_rollout    = instance.force_rollout
     }
   ]
 }
