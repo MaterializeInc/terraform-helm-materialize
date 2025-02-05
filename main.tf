@@ -69,6 +69,9 @@ resource "kubernetes_manifest" "materialize_instances" {
     spec = {
       environmentdImageRef = "materialize/environmentd:${each.value.environmentd_version}"
       backendSecretName    = "${each.key}-materialize-backend"
+      inPlaceRollout       = each.value.in_place_rollout
+      requestRollout       = each.value.request_rollout
+      forceRollout         = each.value.force_rollout
       environmentdResourceRequirements = {
         limits = {
           memory = each.value.memory_limit
