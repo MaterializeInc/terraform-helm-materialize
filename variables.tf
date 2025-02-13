@@ -15,9 +15,21 @@ variable "operator_version" {
 }
 
 variable "helm_repository" {
-  description = "Repository URL for the Materialize operator Helm chart"
+  description = "Repository URL for the Materialize operator Helm chart. Leave empty if using local chart."
   type        = string
   default     = "https://materializeinc.github.io/materialize/"
+}
+
+variable "helm_chart" {
+  description = "Chart name from repository or local path to chart. For local charts, set the path to the chart directory."
+  type        = string
+  default     = "materialize-operator"
+}
+
+variable "use_local_chart" {
+  description = "Whether to use a local chart instead of one from a repository"
+  type        = bool
+  default     = false
 }
 
 variable "helm_values" {
