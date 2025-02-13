@@ -23,11 +23,13 @@ resource "kubernetes_namespace" "instance_namespaces" {
 }
 
 resource "helm_release" "materialize_operator" {
-  name       = local.name_prefix
-  namespace  = kubernetes_namespace.materialize.metadata[0].name
-  repository = var.helm_repository
-  chart      = "materialize-operator"
-  version    = var.operator_version
+  name      = local.name_prefix
+  namespace = kubernetes_namespace.materialize.metadata[0].name
+
+  // Use repository and chart name only if not using local chart
+  repository = var.use_local_chart ? null : var.helm_repository
+  chart      = var.helm_chart
+  version    = var.use_local_chart ? null : var.operator_version
 
   values = [
     yamlencode(var.helm_values)
