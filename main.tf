@@ -109,19 +109,20 @@ resource "kubernetes_manifest" "materialize_instances" {
 
 # Materialize does not currently create databases within the instances, so we need to create them ourselves
 resource "kubernetes_job" "db_init_job" {
-  for_each = { for idx, instance in var.instances : instance.database_name => instance if lookup(instance, "create_database", true) }
+  for_each = { for idx, instance in var.instances : "${instance.name}-${instance.database_name}" => instance if lookup(instance, "create_database", true) }
 
   metadata {
-    name      = replace("create-db-${each.key}", "_", "-")
+    name      = replace("db-${each.value.name}-${each.value.database_name}", "_", "-")
     namespace = coalesce(each.value.namespace, var.operator_namespace)
   }
 
   spec {
-    backoff_limit = 3
+    ttl_seconds_after_finished = 3600
+    backoff_limit              = 5
     template {
       metadata {
         labels = {
-          app = "init-db-${each.key}"
+          app = "init-db-${each.value.name}"
         }
       }
       spec {
@@ -132,12 +133,39 @@ resource "kubernetes_job" "db_init_job" {
           command = [
             "/bin/sh",
             "-c",
-            "psql $DATABASE_URL -c \"CREATE DATABASE ${each.key};\""
+            <<-EOT
+            # Extract connection details and connect to postgres database
+            export PGCONNECTION=$(echo $DATABASE_URL | sed 's|/[^/]*$|/postgres|')
+
+            echo "Waiting for PostgreSQL to be ready..."
+            until pg_isready -d $PGCONNECTION; do
+              sleep 2
+            done
+
+            # Check if database exists
+            if psql $PGCONNECTION -t -c "SELECT 1 FROM pg_database WHERE datname='${each.value.database_name}';" | grep -q 1; then
+              echo "Database ${each.value.database_name} already exists."
+            else
+              echo "Creating database ${each.value.database_name}..."
+              psql $PGCONNECTION -c "CREATE DATABASE ${each.value.database_name};"
+            fi
+            EOT
           ]
 
           env {
             name  = "DATABASE_URL"
             value = replace(each.value.metadata_backend_url, "/${basename(each.value.metadata_backend_url)}", "/postgres")
+          }
+
+          resources {
+            limits = {
+              cpu    = "200m"
+              memory = "128Mi"
+            }
+            requests = {
+              cpu    = "100m"
+              memory = "64Mi"
+            }
           }
         }
 
