@@ -72,8 +72,8 @@ resource "kubernetes_manifest" "materialize_instances" {
       environmentdImageRef = "materialize/environmentd:${each.value.environmentd_version}"
       backendSecretName    = "${each.key}-materialize-backend"
       inPlaceRollout       = each.value.in_place_rollout
-      requestRollout       = each.value.request_rollout
-      forceRollout         = each.value.force_rollout
+      requestRollout       = lookup(each.value, "request_rollout", null)
+      forceRollout         = lookup(each.value, "force_rollout", null)
       environmentdResourceRequirements = {
         limits = {
           memory = each.value.memory_limit
@@ -108,7 +108,7 @@ resource "kubernetes_job" "db_init_job" {
   for_each = { for idx, instance in var.instances : "${instance.name}-${instance.database_name}" => instance if lookup(instance, "create_database", true) }
 
   metadata {
-    name      = replace("db-${each.value.name}-${each.value.database_name}", "_", "-")
+    name      = replace("db-${each.value.database_name}", "_", "-")
     namespace = coalesce(each.value.namespace, var.operator_namespace)
   }
 
@@ -142,16 +142,22 @@ resource "kubernetes_job" "db_init_job" {
             if psql $PGCONNECTION -t -c "SELECT 1 FROM pg_database WHERE datname='${each.value.database_name}';" | grep -q 1; then
               echo "Database ${each.value.database_name} already exists."
 
-              %{if lookup(each.value, "database_force_recreate", false)}
-              echo "Force recreate enabled, dropping and recreating database ${each.value.database_name}..."
-              # Terminate existing connections first
-              psql $PGCONNECTION -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname='${each.value.database_name}';"
-              psql $PGCONNECTION -c "DROP DATABASE ${each.value.database_name};"
-              psql $PGCONNECTION -c "CREATE DATABASE ${each.value.database_name};"
-              %{endif}
+              # Check if force recreate is enabled
+              FORCE_RECREATE="${lookup(each.value, "database_force_recreate", "false")}"
+              if [ "$FORCE_RECREATE" = "true" ]; then
+                echo "Force recreate enabled, dropping and recreating database ${each.value.database_name}..."
+                # Terminate existing connections first
+                psql $PGCONNECTION -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname='${each.value.database_name}';"
+                psql $PGCONNECTION -c "DROP DATABASE ${each.value.database_name};"
+                psql $PGCONNECTION -c "CREATE DATABASE ${each.value.database_name};"
+                echo "Database ${each.value.database_name} recreated successfully."
+              else
+                echo "Force recreate is disabled. Skipping recreation."
+              fi
             else
               echo "Creating database ${each.value.database_name}..."
               psql $PGCONNECTION -c "CREATE DATABASE ${each.value.database_name};"
+              echo "Database ${each.value.database_name} created successfully."
             fi
             EOT
           ]
