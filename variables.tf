@@ -104,3 +104,9 @@ variable "postgres_version" {
   type        = string
   default     = "15"
 }
+
+variable "metadata_database_force_recreate" {
+  description = "Force recreation of the PG database on changes. This should only be turned on during development"
+  type        = bool
+  default     = false
+}

@@ -124,19 +124,29 @@ resource "kubernetes_job" "db_init_job" {
         container {
           name  = "init-db"
           image = "postgres:${var.postgres_version}"
-
           command = [
             "/bin/sh",
-            "-c",
-            "psql $DATABASE_URL -c \"CREATE DATABASE ${each.key};\""
+            "-c"
           ]
-
+          args = [
+            <<-EOC
+            set -x
+            if $FORCE_RECREATE; then
+              # psql $DATABASE_URL -c 'DROP DATABASE IF EXISTS ${each.key} WITH (FORCE);'
+            fi
+            set -e
+            psql $DATABASE_URL -c 'CREATE DATABASE ${each.key};'
+            EOC
+          ]
           env {
             name  = "DATABASE_URL"
             value = replace(each.value.metadata_backend_url, "/${basename(each.value.metadata_backend_url)}", "/postgres")
           }
+          env {
+            name  = "FORCE_RECREATE"
+            value = var.metadata_database_force_recreate
+          }
         }
-
         restart_policy = "OnFailure"
       }
     }
