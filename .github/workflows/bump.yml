@@ -32,6 +32,23 @@ jobs:
         run: |
           sed -i 's|github.com/MaterializeInc/terraform-helm-materialize?ref=v[0-9.]*|github.com/MaterializeInc/terraform-helm-materialize?ref=${{ steps.get_version.outputs.VERSION }}|' main.tf
 
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "~1.0"
+          terraform_wrapper: false
+
+      - name: Update .terraform.lock.hcl
+        run: |
+          # Initialize Terraform to update the lock file
+          terraform init -upgrade
+
+          # If lock file doesn't exist yet (unlikely but possible)
+          if [ ! -f .terraform.lock.hcl ]; then
+            echo "No lock file found. Creating it with terraform init."
+            terraform init
+          fi
+
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
@@ -41,7 +58,7 @@ jobs:
           body: |
             Updates terraform-helm-materialize module to version ${{ steps.get_version.outputs.VERSION }}.
 
-            This PR was automatically generated.
+            This PR was automatically generated and includes updated .terraform.lock.hcl file.
           commit-message: "chore: bump terraform-helm-materialize to ${{ steps.get_version.outputs.VERSION }}"
           committer: GitHub <noreply@github.com>
           author: GitHub <noreply@github.com>
