@@ -60,6 +60,10 @@ resource "kubernetes_secret" "materialize_backends" {
 # https://github.com/hashicorp/terraform-provider-kubernetes/issues/1775
 resource "kubernetes_manifest" "materialize_instances" {
   for_each = { for idx, instance in var.instances : instance.name => instance }
+  field_manager {
+    # force field manager conflicts to be overridden
+    force_conflicts = true
+  }
 
   manifest = {
     apiVersion = "materialize.cloud/v1alpha1"
@@ -85,11 +89,11 @@ resource "kubernetes_manifest" "materialize_instances" {
       }
       balancerdResourceRequirements = {
         limits = {
-          memory = "256Mi"
+          memory = lookup(each.value, "balancer_memory_limit", "256Mi")
         }
         requests = {
-          cpu    = "100m"
-          memory = "256Mi"
+          cpu    = lookup(each.value, "balancer_cpu_request", "100m")
+          memory = lookup(each.value, "balancer_memory_request", "256Mi")
         }
       }
     }

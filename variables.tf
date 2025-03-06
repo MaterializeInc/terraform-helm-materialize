@@ -64,19 +64,22 @@ variable "install_metrics_server" {
 variable "instances" {
   description = "Configuration for Materialize instances"
   type = list(object({
-    name                 = string
-    namespace            = optional(string)
-    create_database      = optional(bool, true)
-    database_name        = string
-    metadata_backend_url = string
-    persist_backend_url  = string
-    environmentd_version = optional(string, "v0.130.4")
-    cpu_request          = optional(string, "1")
-    memory_request       = optional(string, "1Gi")
-    memory_limit         = optional(string, "1Gi")
-    in_place_rollout     = optional(bool, false)
-    request_rollout      = optional(string)
-    force_rollout        = optional(string)
+    name                    = string
+    namespace               = optional(string)
+    create_database         = optional(bool, true)
+    database_name           = string
+    metadata_backend_url    = string
+    persist_backend_url     = string
+    environmentd_version    = optional(string, "v0.130.4")
+    cpu_request             = optional(string, "1")
+    memory_request          = optional(string, "1Gi")
+    memory_limit            = optional(string, "1Gi")
+    in_place_rollout        = optional(bool, false)
+    request_rollout         = optional(string)
+    force_rollout           = optional(string)
+    balancer_memory_request = optional(string, "256Mi")
+    balancer_memory_limit   = optional(string, "256Mi")
+    balancer_cpu_request    = optional(string, "100m")
   }))
   default = []
 
