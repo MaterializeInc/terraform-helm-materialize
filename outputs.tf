@@ -22,3 +22,10 @@ output "materialize_instances" {
     }
   }
 }
+
+output "materialize_instance_resource_ids" {
+  description = "Resource IDs of created Materialize instances"
+  value = {
+    for name, instance in data.kubernetes_resource.materialize_instances : name => instance.object.status.resourceId
+  }
+}

@@ -100,11 +100,32 @@ resource "kubernetes_manifest" "materialize_instances" {
     }
   }
 
+  wait {
+    fields = {
+      "status.resourceId" = ".*"
+    }
+  }
+
   depends_on = [
     helm_release.materialize_operator,
     kubernetes_secret.materialize_backends,
     kubernetes_namespace.instance_namespaces,
     kubernetes_job.db_init_job
+  ]
+}
+
+data "kubernetes_resource" "materialize_instances" {
+  for_each = { for idx, instance in var.instances : instance.name => instance }
+
+  api_version = "materialize.cloud/v1alpha1"
+  kind        = "Materialize"
+  metadata {
+    name      = each.value.name
+    namespace = each.value.namespace
+  }
+
+  depends_on = [
+    kubernetes_manifest.materialize_instances,
   ]
 }
 
