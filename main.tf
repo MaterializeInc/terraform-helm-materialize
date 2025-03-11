@@ -62,6 +62,7 @@ resource "kubernetes_manifest" "materialize_instances" {
   for_each = { for idx, instance in var.instances : instance.name => instance }
   field_manager {
     # force field manager conflicts to be overridden
+    name            = "terraform"
     force_conflicts = true
   }
 
