@@ -29,3 +29,13 @@ output "materialize_instance_resource_ids" {
     for name, instance in data.kubernetes_resource.materialize_instances : name => instance.object.status.resourceId
   }
 }
+
+output "openebs_enabled" {
+  description = "Whether OpenEBS is enabled"
+  value       = var.install_openebs
+}
+
+output "openebs_namespace" {
+  description = "Namespace where OpenEBS is installed"
+  value       = var.install_openebs ? var.openebs_namespace : null
+}
