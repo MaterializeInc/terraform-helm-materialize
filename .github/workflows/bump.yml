@@ -35,7 +35,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: "~1.0"
+          terraform_version: "1.9.8"
           terraform_wrapper: false
 
       - name: Update .terraform.lock.hcl
