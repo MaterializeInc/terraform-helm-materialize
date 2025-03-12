@@ -238,7 +238,7 @@ resource "helm_release" "openebs" {
 
   name       = "openebs"
   namespace  = kubernetes_namespace.openebs[0].metadata[0].name
-  repository = "https://openebs.github.io/openebs"
+  repository = "https://openebs.github.io/charts"
   chart      = "openebs"
   version    = var.openebs_version
 
