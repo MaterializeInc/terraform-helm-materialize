@@ -43,7 +43,6 @@ variable "operator_namespace" {
   default     = "materialize"
 }
 
-# Monitoring configuration
 variable "monitoring_namespace" {
   description = "Namespace for monitoring resources"
   type        = string
@@ -62,26 +61,6 @@ variable "install_metrics_server" {
   default     = true
 }
 
-# OpenEBS configuration
-variable "install_openebs" {
-  description = "Whether to install OpenEBS for NVMe storage"
-  type        = bool
-  default     = false
-}
-
-variable "openebs_namespace" {
-  description = "Namespace for OpenEBS components"
-  type        = string
-  default     = "openebs"
-}
-
-variable "openebs_version" {
-  description = "Version of OpenEBS Helm chart to install"
-  type        = string
-  default     = "4.2.0"
-}
-
-# Materialize instance configuration
 variable "instances" {
   description = "Configuration for Materialize instances"
   type = list(object({
