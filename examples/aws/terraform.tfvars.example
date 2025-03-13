@@ -1,27 +1,9 @@
+materialize_instance_name = "mz-instance-1"
+materialize_instance_namespace = "materialize"
 
-instance_configs_example = [
-  {
-    name              = "mz-instance-1"
-    namespace         = "materialize"
-    database_username = "admin"
-    database_password = "securepassword123"
-    database_host     = "my-rds-instance.xxxxx.region.rds.amazonaws.com"
-    database_name     = "mz_db_1"
-    cpu_request      = "2"
-    memory_request   = "4Gi"
-    memory_limit     = "8Gi"
-  },
-  {
-    name              = "mz-instance-2"
-    database_username = "admin"
-    database_password = "securepassword123"
-    database_host     = "my-rds-instance.xxxxx.region.rds.amazonaws.com"
-    cpu_request      = "1"
-    memory_request   = "2Gi"
-    memory_limit     = "4Gi"
-  }
-]
+database_username = "admin"
+database_password = "securepassword123"
+database_host     = "my-rds-instance.xxxxx.region.rds.amazonaws.com"
+database_name     = "mz_db_1"
 
 iam_role_arn = "arn:aws:iam::123456789012:role/materialize-role"
-namespace    = "myapp"
-environment  = "prod"
