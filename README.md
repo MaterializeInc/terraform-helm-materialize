@@ -59,6 +59,7 @@ No modules.
 | [kubernetes_namespace.materialize](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace) | resource |
 | [kubernetes_namespace.monitoring](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace) | resource |
 | [kubernetes_secret.materialize_backends](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/secret) | resource |
+| [kubernetes_resource.materialize_instances](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/data-sources/resource) | data source |
 
 ## Inputs
 
@@ -69,12 +70,12 @@ No modules.
 | <a name="input_helm_repository"></a> [helm\_repository](#input\_helm\_repository) | Repository URL for the Materialize operator Helm chart. Leave empty if using local chart. | `string` | `"https://materializeinc.github.io/materialize/"` | no |
 | <a name="input_helm_values"></a> [helm\_values](#input\_helm\_values) | Values to pass to the Helm chart | `any` | n/a | yes |
 | <a name="input_install_metrics_server"></a> [install\_metrics\_server](#input\_install\_metrics\_server) | Whether to install the metrics-server | `bool` | `true` | no |
-| <a name="input_instances"></a> [instances](#input\_instances) | Configuration for Materialize instances | <pre>list(object({<br/>    name                    = string<br/>    namespace               = optional(string)<br/>    create_database         = optional(bool, true)<br/>    database_name           = string<br/>    metadata_backend_url    = string<br/>    persist_backend_url     = string<br/>    environmentd_version    = optional(string, "v0.130.4")<br/>    cpu_request             = optional(string, "1")<br/>    memory_request          = optional(string, "1Gi")<br/>    memory_limit            = optional(string, "1Gi")<br/>    in_place_rollout        = optional(bool, true)<br/>    request_rollout         = optional(string, "00000000-0000-0000-0000-000000000000")<br/>    force_rollout           = optional(string, "00000000-0000-0000-0000-000000000000")<br/>    balancer_memory_request = optional(string, "256Mi")<br/>    balancer_memory_limit   = optional(string, "256Mi")<br/>    balancer_cpu_request    = optional(string, "100m")<br/>  }))</pre> | `[]` | no |
+| <a name="input_instances"></a> [instances](#input\_instances) | Configuration for Materialize instances | <pre>list(object({<br/>    name                    = string<br/>    namespace               = optional(string)<br/>    create_database         = optional(bool, true)<br/>    database_name           = string<br/>    metadata_backend_url    = string<br/>    persist_backend_url     = string<br/>    environmentd_version    = optional(string, "v0.130.4")<br/>    cpu_request             = optional(string, "1")<br/>    memory_request          = optional(string, "1Gi")<br/>    memory_limit            = optional(string, "1Gi")<br/>    in_place_rollout        = optional(bool, true)<br/>    request_rollout         = optional(string, "00000000-0000-0000-0000-000000000001")<br/>    force_rollout           = optional(string, "00000000-0000-0000-0000-000000000001")<br/>    balancer_memory_request = optional(string, "256Mi")<br/>    balancer_memory_limit   = optional(string, "256Mi")<br/>    balancer_cpu_request    = optional(string, "100m")<br/>  }))</pre> | `[]` | no |
 | <a name="input_metrics_server_version"></a> [metrics\_server\_version](#input\_metrics\_server\_version) | Version of metrics-server to install | `string` | `"3.12.2"` | no |
 | <a name="input_monitoring_namespace"></a> [monitoring\_namespace](#input\_monitoring\_namespace) | Namespace for monitoring resources | `string` | `"monitoring"` | no |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | Namespace prefix for all resources | `string` | n/a | yes |
 | <a name="input_operator_namespace"></a> [operator\_namespace](#input\_operator\_namespace) | Namespace for the Materialize operator | `string` | `"materialize"` | no |
-| <a name="input_operator_version"></a> [operator\_version](#input\_operator\_version) | Version of the Materialize operator to install | `string` | `"v25.1.2"` | no |
+| <a name="input_operator_version"></a> [operator\_version](#input\_operator\_version) | Version of the Materialize operator to install | `string` | `"v25.1.4"` | no |
 | <a name="input_postgres_version"></a> [postgres\_version](#input\_postgres\_version) | Postgres version to use for the metadata backend | `string` | `"15"` | no |
 | <a name="input_use_local_chart"></a> [use\_local\_chart](#input\_use\_local\_chart) | Whether to use a local chart instead of one from a repository | `bool` | `false` | no |
 
@@ -82,6 +83,7 @@ No modules.
 
 | Name | Description |
 |------|-------------|
+| <a name="output_materialize_instance_resource_ids"></a> [materialize\_instance\_resource\_ids](#output\_materialize\_instance\_resource\_ids) | Resource IDs of created Materialize instances |
 | <a name="output_materialize_instances"></a> [materialize\_instances](#output\_materialize\_instances) | Details of created Materialize instances |
 | <a name="output_operator_namespace"></a> [operator\_namespace](#output\_operator\_namespace) | Namespace where the operator is installed |
 | <a name="output_operator_release_name"></a> [operator\_release\_name](#output\_operator\_release\_name) | Helm release name of the operator |
