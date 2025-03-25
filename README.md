@@ -6,6 +6,13 @@ Terraform module for installing the Materialize Helm chart
 
 This module installs the Materialize Helm chart into a Kubernetes cluster using Terraform.
 
+> [!WARNING]
+> This module is intended for demonstration/evaluation purposes as well as for serving as a template when building your own production deployment of Materialize.
+>
+> This module should not be directly relied upon for production deployments: **future releases of the module will contain breaking changes.** Instead, to use as a starting point for your own production deployment, either:
+> - Fork this repo and pin to a specific version, or
+> - Use the code as a reference when developing your own deployment.
+
 ## Instance Rollout Options
 
 The module supports several rollout strategies for Materialize instances through the following configuration options:
