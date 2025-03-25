@@ -50,6 +50,11 @@ resource "kubernetes_secret" "materialize_backends" {
     metadata_backend_url = each.value.metadata_backend_url
     persist_backend_url  = each.value.persist_backend_url
   }
+
+  depends_on = [
+    kubernetes_namespace.instance_namespaces,
+    kubernetes_namespace.materialize,
+  ]
 }
 
 # The kubernetes_manifest resource is used to create Materialize instances
