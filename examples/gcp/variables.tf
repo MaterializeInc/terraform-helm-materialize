@@ -19,7 +19,6 @@ variable "region" {
 variable "orchestratord_version" {
   description = "Version of the Materialize orchestrator to install"
   type        = string
-  default     = "v0.138.0"
 }
 
 variable "instance_configs" {
