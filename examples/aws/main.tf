@@ -6,9 +6,9 @@ locals {
       }
     }
     operator = {
-      image = {
+      image = var.orchestratord_version == null ? {} : {
         tag = var.orchestratord_version
-      }
+      },
       cloudProvider = {
         type   = "aws"
         region = data.aws_region.current.name

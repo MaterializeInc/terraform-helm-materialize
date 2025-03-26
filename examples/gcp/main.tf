@@ -50,9 +50,9 @@ module "operator" {
   operator_namespace = var.operator_namespace
 
   helm_values = {
-    image = {
+    image = var.orchestratord_version == null ? {} : {
       tag = var.orchestratord_version
-    }
+    },
     observability = {
       podMetrics = {
         enabled = true
