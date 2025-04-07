@@ -49,6 +49,7 @@ resource "kubernetes_secret" "materialize_backends" {
   data = {
     metadata_backend_url = each.value.metadata_backend_url
     persist_backend_url  = each.value.persist_backend_url
+    license_key          = each.value.license_key == null ? "" : each.value.license_key
   }
 
   depends_on = [
