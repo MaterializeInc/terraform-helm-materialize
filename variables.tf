@@ -71,6 +71,7 @@ variable "instances" {
     database_name           = string
     metadata_backend_url    = string
     persist_backend_url     = string
+    license_key             = optional(string)
     environmentd_version    = optional(string, "v0.130.8")
     cpu_request             = optional(string, "1")
     memory_request          = optional(string, "1Gi")
