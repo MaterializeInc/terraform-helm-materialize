@@ -49,6 +49,10 @@ jobs:
             terraform init
           fi
 
+        name: Update README
+        run: |
+          docker run --rm --volume "$(pwd):/terraform-docs" quay.io/terraform-docs/terraform-docs:0.19.0  markdown table --output-file README.md --output-mode inject /terraform-docs
+
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
