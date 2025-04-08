@@ -11,7 +11,7 @@ variable "environment" {
 variable "operator_version" {
   description = "Version of the Materialize operator to install"
   type        = string
-  default     = "v25.1.6"
+  default     = "v25.1.7"
   nullable    = false
 }
 
