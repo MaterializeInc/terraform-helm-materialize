@@ -65,15 +65,18 @@ variable "install_metrics_server" {
 variable "instances" {
   description = "Configuration for Materialize instances"
   type = list(object({
-    name                    = string
-    namespace               = optional(string)
-    create_database         = optional(bool, true)
-    database_name           = string
-    metadata_backend_url    = string
-    persist_backend_url     = string
-    license_key             = optional(string)
-    environmentd_version    = optional(string, "v0.130.12") # META: mz version
-    environmentd_extra_args = optional(list(string), [])
+    name                 = string
+    namespace            = optional(string)
+    create_database      = optional(bool, true)
+    database_name        = string
+    metadata_backend_url = string
+    persist_backend_url  = string
+    license_key          = optional(string)
+    environmentd_version = optional(string, "v0.130.12") # META: mz version
+    environmentd_extra_env = optional(list(object({
+      name  = string
+      value = string
+    })), [])
     cpu_request             = optional(string, "1")
     memory_request          = optional(string, "1Gi")
     memory_limit            = optional(string, "1Gi")
