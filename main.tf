@@ -86,7 +86,7 @@ resource "kubernetes_manifest" "materialize_instances" {
       requestRollout       = lookup(each.value, "request_rollout", null)
       forceRollout         = lookup(each.value, "force_rollout", null)
 
-      environmentdExtraArgs = length(lookup(each.value, "environmentd_extra_args", [])) > 0 ? each.value.environmentd_extra_args : null
+      environmentdExtraEnv = length(lookup(each.value, "environmentd_extra_env", [])) > 0 ? each.value.environmentd_extra_env : null
 
       environmentdResourceRequirements = {
         limits = {
