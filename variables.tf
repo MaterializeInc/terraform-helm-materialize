@@ -73,6 +73,7 @@ variable "instances" {
     persist_backend_url     = string
     license_key             = optional(string)
     environmentd_version    = optional(string, "v0.130.12") # META: mz version
+    environmentd_extra_args = optional(list(string), [])
     cpu_request             = optional(string, "1")
     memory_request          = optional(string, "1Gi")
     memory_limit            = optional(string, "1Gi")
