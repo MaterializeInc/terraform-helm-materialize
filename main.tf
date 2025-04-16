@@ -1,5 +1,17 @@
 locals {
   name_prefix = "${var.namespace}-${var.environment}"
+
+  format_env_vars = { for idx, instance in var.instances : instance.name =>
+    length(lookup(instance, "environmentd_extra_env", [])) > 0 ? [
+      {
+        name = "MZ_SYSTEM_PARAMETER_DEFAULT"
+        value = join(";", [
+          for item in instance.environmentd_extra_env :
+          "${item.name}=${item.value}"
+        ])
+      }
+    ] : null
+  }
 }
 
 resource "kubernetes_namespace" "materialize" {
@@ -85,6 +97,9 @@ resource "kubernetes_manifest" "materialize_instances" {
       inPlaceRollout       = each.value.in_place_rollout
       requestRollout       = lookup(each.value, "request_rollout", null)
       forceRollout         = lookup(each.value, "force_rollout", null)
+
+      environmentdExtraEnv = lookup(local.format_env_vars, each.key, null)
+
       environmentdResourceRequirements = {
         limits = {
           memory = each.value.memory_limit
