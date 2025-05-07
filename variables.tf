@@ -11,7 +11,7 @@ variable "environment" {
 variable "operator_version" {
   description = "Version of the Materialize operator to install"
   type        = string
-  default     = "v25.1.7"
+  default     = "v25.1.11" # META: helm-chart version
   nullable    = false
 }
 
@@ -72,7 +72,7 @@ variable "instances" {
     metadata_backend_url    = string
     persist_backend_url     = string
     license_key             = optional(string)
-    environmentd_version    = optional(string, "v0.130.8")
+    environmentd_version    = optional(string, "v0.130.12") # META: mz version
     cpu_request             = optional(string, "1")
     memory_request          = optional(string, "1Gi")
     memory_limit            = optional(string, "1Gi")
