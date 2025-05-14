@@ -9,6 +9,10 @@ instance_configs_example = [
     cpu_request      = "2"
     memory_request   = "4Gi"
     memory_limit     = "8Gi"
+    environmentd_extra_args = [
+      "--system-parameter-default=max_clusters=100",
+      "--system-parameter-default=max_connections=100"
+    ]
   },
   {
     name              = "mz-instance-2"

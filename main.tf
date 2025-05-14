@@ -17,7 +17,7 @@ locals {
     for instance in var.instances : instance.name =>
     length(lookup(instance, "environmentd_extra_args", [])) > 0 ? [
       for item in instance.environmentd_extra_args :
-      "--system-parameter-default=${item.name}=${item.value}"
+      item
     ] : null
   }
 }
