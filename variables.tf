@@ -77,10 +77,7 @@ variable "instances" {
       name  = string
       value = string
     })), [])
-    environmentd_extra_args = optional(list(object({
-      name  = string
-      value = string
-    })), [])
+    environmentd_extra_args = optional(list(string), [])
     cpu_request             = optional(string, "1")
     memory_request          = optional(string, "1Gi")
     memory_limit            = optional(string, "1Gi")
