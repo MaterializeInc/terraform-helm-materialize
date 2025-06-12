@@ -121,7 +121,8 @@ variable "instances" {
   validation {
     condition = alltrue([
       for instance in var.instances :
-      instance.authenticator_kind != "Password" || instance.external_login_password_mz_system != null
+      (instance.authenticator_kind == "Password" && instance.external_login_password_mz_system != null)
+      || (instance.authenticator_kind == "None" && instance.external_login_password_mz_system == null)
     ])
     error_message = "When authenticator_kind is 'Password', external_login_password_mz_system must be provided"
   }
