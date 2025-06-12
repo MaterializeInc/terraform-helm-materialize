@@ -73,7 +73,6 @@ variable "instances" {
     persist_backend_url               = string
     license_key                       = optional(string)
     external_login_password_mz_system = optional(string)
-    authenticator_kind                = optional(string, "None")
     environmentd_version              = optional(string, "v0.130.13") # META: mz version
     environmentd_extra_env = optional(list(object({
       name  = string
@@ -108,23 +107,6 @@ variable "instances" {
       can(regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$", instance.force_rollout))
     ])
     error_message = "Force rollout must be a valid UUID in the format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-  }
-
-  validation {
-    condition = alltrue([
-      for instance in var.instances :
-      contains(["Password", "None"], instance.authenticator_kind)
-    ])
-    error_message = "Authenticator kind must be either 'Password' or 'None'"
-  }
-
-  validation {
-    condition = alltrue([
-      for instance in var.instances :
-      (instance.authenticator_kind == "Password" && instance.external_login_password_mz_system != null)
-      || (instance.authenticator_kind == "None" && instance.external_login_password_mz_system == null)
-    ])
-    error_message = "When authenticator_kind is 'Password', external_login_password_mz_system must be provided"
   }
 }
 
