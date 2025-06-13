@@ -32,11 +32,18 @@ To use these options, set the appropriate values in the `instances` input variab
 
 ## Authentication Options
 
-The module supports password authentication for Materialize instances when the `external_login_password_mz_system` variable is set.
+The module supports two authentication modes for Materialize instances:
 
-### `external_login_password_mz_system` (string, optional)
-- When provided: Enables password authentication for the `mz_system` user and sets this as the password
-- When not provided or set to `null`: Disables password authentication
+### `authenticator_kind` (string)
+- Determines how users authenticate with the Materialize instance.
+- Valid values are:
+  - `"None"` (default): No password authentication is enabled.
+  - `"Password"`: Enables password authentication for the `mz_system` user. When set to `"Password"`, you **must** provide a value for `external_login_password_mz_system`.
+
+### `external_login_password_mz_system` (string)
+- The password to set for the `mz_system` user when `authenticator_kind` is `"Password"`.
+- This value is stored securely in a Kubernetes Secret and used by the Materialize operator to configure authentication.
+- **Required** if `authenticator_kind` is set to `"Password"`.
 
 **Example:**
 ```hcl
@@ -44,10 +51,11 @@ instances = [
   {
     name                              = "materialize-instance"
     namespace                         = "materialize"
-    external_login_password_mz_system = "your-password-here"
-    # ...other fields...
+    authenticator_kind                = "Password"
+    external_login_password_mz_system = "your-secure-password"
+    # other instance configurations
   }
 ]
 ```
 
-If `external_login_password_mz_system` is not set the `authenticator_kind` will default to `None`, meaning no authentication is required to connect to the Materialize instance.
+If `authenticator_kind` is not set or set to `"None"`, password authentication is disabled and `external_login_password_mz_system` is ignored.

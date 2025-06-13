@@ -72,7 +72,7 @@ resource "kubernetes_secret" "materialize_backends" {
       persist_backend_url  = each.value.persist_backend_url
       license_key          = each.value.license_key == null ? "" : each.value.license_key
     },
-    each.value.external_login_password_mz_system != null ? {
+    each.value.authenticator_kind == "Password" && each.value.external_login_password_mz_system != null ? {
       external_login_password_mz_system = each.value.external_login_password_mz_system
     } : {}
   )
@@ -107,7 +107,7 @@ resource "kubernetes_manifest" "materialize_instances" {
     spec = {
       environmentdImageRef = "materialize/environmentd:${each.value.environmentd_version}"
       backendSecretName    = "${each.key}-materialize-backend"
-      authenticatorKind    = each.value.external_login_password_mz_system != null ? "Password" : "None"
+      authenticatorKind    = each.value.authenticator_kind
       inPlaceRollout       = each.value.in_place_rollout
       requestRollout       = lookup(each.value, "request_rollout", null)
       forceRollout         = lookup(each.value, "force_rollout", null)
