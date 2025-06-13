@@ -66,11 +66,16 @@ resource "kubernetes_secret" "materialize_backends" {
     namespace = coalesce(each.value.namespace, var.operator_namespace)
   }
 
-  data = {
-    metadata_backend_url = each.value.metadata_backend_url
-    persist_backend_url  = each.value.persist_backend_url
-    license_key          = each.value.license_key == null ? "" : each.value.license_key
-  }
+  data = merge(
+    {
+      metadata_backend_url = each.value.metadata_backend_url
+      persist_backend_url  = each.value.persist_backend_url
+      license_key          = each.value.license_key == null ? "" : each.value.license_key
+    },
+    each.value.authenticator_kind == "Password" && each.value.external_login_password_mz_system != null ? {
+      external_login_password_mz_system = each.value.external_login_password_mz_system
+    } : {}
+  )
 
   depends_on = [
     kubernetes_namespace.instance_namespaces,
@@ -102,6 +107,7 @@ resource "kubernetes_manifest" "materialize_instances" {
     spec = {
       environmentdImageRef = "materialize/environmentd:${each.value.environmentd_version}"
       backendSecretName    = "${each.key}-materialize-backend"
+      authenticatorKind    = each.value.authenticator_kind
       inPlaceRollout       = each.value.in_place_rollout
       requestRollout       = lookup(each.value, "request_rollout", null)
       forceRollout         = lookup(each.value, "force_rollout", null)
