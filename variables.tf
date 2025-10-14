@@ -11,7 +11,7 @@ variable "environment" {
 variable "operator_version" {
   description = "Version of the Materialize operator to install"
   type        = string
-  default     = "v25.2.10" # META: helm-chart version
+  default     = "v25.2.11" # META: helm-chart version
   nullable    = false
 }
 
