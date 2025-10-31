@@ -36,5 +36,6 @@ variable "instance_configs" {
     in_place_rollout     = optional(bool, false)
     request_rollout      = optional(string)
     force_rollout        = optional(string)
+    license_key          = optional(string)
   }))
 }

@@ -57,6 +57,7 @@ instances = [
     namespace                         = "materialize"
     authenticator_kind                = "Password"
     external_login_password_mz_system = "your-secure-password"
+    license_key                       = "[...]"
     # other instance configurations
   }
 ]
