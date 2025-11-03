@@ -70,8 +70,10 @@ resource "kubernetes_secret" "materialize_backends" {
     {
       metadata_backend_url = each.value.metadata_backend_url
       persist_backend_url  = each.value.persist_backend_url
-      license_key          = each.value.license_key == null ? "" : each.value.license_key
     },
+    each.value.license_key != null ? {
+      license_key = each.value.license_key
+    } : {},
     each.value.authenticator_kind == "Password" && each.value.external_login_password_mz_system != null ? {
       external_login_password_mz_system = each.value.external_login_password_mz_system
     } : {}
