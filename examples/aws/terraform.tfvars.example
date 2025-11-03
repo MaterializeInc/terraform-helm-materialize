@@ -13,6 +13,7 @@ instance_configs_example = [
       "--system-parameter-default=max_clusters=100",
       "--system-parameter-default=max_connections=100"
     ]
+    license_key      = "[...]"
   },
   {
     name              = "mz-instance-2"
@@ -22,6 +23,7 @@ instance_configs_example = [
     cpu_request      = "1"
     memory_request   = "2Gi"
     memory_limit     = "4Gi"
+    license_key      = "[...]"
   }
 ]
 

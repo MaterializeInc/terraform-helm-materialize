@@ -58,6 +58,7 @@ locals {
       in_place_rollout = instance.in_place_rollout
       request_rollout  = instance.request_rollout
       force_rollout    = instance.force_rollout
+      license_key      = instance.license_key
     }
   ]
 }
