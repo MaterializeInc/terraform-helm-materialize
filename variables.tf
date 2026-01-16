@@ -11,7 +11,7 @@ variable "environment" {
 variable "operator_version" {
   description = "Version of the Materialize operator to install"
   type        = string
-  default     = "v26.6.0" # META: helm-chart version
+  default     = "v26.7.0" # META: helm-chart version
   nullable    = false
 }
 
@@ -74,7 +74,7 @@ variable "instances" {
     license_key                       = optional(string)
     external_login_password_mz_system = optional(string)
     authenticator_kind                = optional(string, "None")
-    environmentd_version              = optional(string, "v26.6.0") # META: mz version
+    environmentd_version              = optional(string, "v26.7.0") # META: mz version
     environmentd_extra_env = optional(list(object({
       name  = string
       value = string
